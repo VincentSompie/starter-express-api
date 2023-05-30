@@ -1,7 +1,24 @@
-const express = require('express')
-const app = express()
-app.all('/', (req, res) => {
-    console.log("Just got a request!")
-    res.send('Vincent Sompie - 210211060120')
-})
-app.listen(process.env.PORT || 3000)
+const http = require ('http');
+const url = require ('url');
+
+const server = http.createServer(
+    (req, res) => {
+        const queryObject = url.parse(req.url, true).query;  
+        const radius = queryObject.radius;
+       
+        if (radius === undefined){
+            res.responseCode = 400;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end('Error: Please provide a radius parameter in your query string\n');
+          } else {
+            const area = Math.PI * radius ** 2;
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/plain');
+            res.end(`The area of a circle with radius ${radius} is ${area}`);
+          }
+        }
+    );
+        
+    server.listen(3000,() => {
+        console.log('Server running at http://localhost:3000/');
+      });
